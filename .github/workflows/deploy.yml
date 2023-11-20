@@ -9,39 +9,28 @@ env:
   GKE_ZONE: europe-north1
 
 jobs:
-  setup:
-    name: Setup
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy to GKE
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-  
-      - name: Auth
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GKE_CREDENTIAL }}
-  
-      - name: Set up gloud CLI
-        uses: google-github-actions/setup-gcloud@v1
-  
-      - name: Get credentials
-        uses: google-github-actions/get-gke-credentials@v1
-        with:
-          cluster_name: ${{ env.GKE_CLUSTER }}
-          location: ${{ env.GKE_ZONE }}
+    - name: Checkout
+      uses: actions/checkout@v4
 
-#  build:
+    - name: Auth
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GKE_CREDENTIAL }}
 
-#  publish:
+    - name: Set up gloud CLI
+      uses: google-github-actions/setup-gcloud@v1
 
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
+    - name: Get credentials
+      uses: google-github-actions/get-gke-credentials@v1
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_ZONE }}
 
-    steps:
-      - name: Deploy
-        run: |-
-          kubectl apply -f deployment.yaml
-
-    
+    - name: Deploy
+      run: |-
+        kubectl apply -f deployment.yaml
