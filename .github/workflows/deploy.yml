@@ -3,19 +3,17 @@ on:
   push:
     branches:
       - main
-## Customise into your configuration
-##########
+
 env:
   PROJECT_ID: complete-agency-405117
   GKE_CLUSTER: pejomi-test-cluster
   GKE_ZONE: europe-north1
   DEPLOYMENT_NAME: pejomi-tester
-##########
+
 jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy to GKE
     runs-on: ubuntu-latest
-    environment: production
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -23,7 +21,7 @@ jobs:
     - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
       with:
         service_account_key: ${{ secrets.GKE_CREDENTIAL }}
-        project_id: ${{ secrets.GKE_PROJECT }}
+        project_id: ${{ env.PROJECT_ID }}
     # Configure Docker to use the gcloud command-line tool as a credential
     - run: |-
         gcloud --quiet auth configure-docker
@@ -36,5 +34,5 @@ jobs:
     # Deploy to the GKE cluster
     - name: Deploy
       run: |-
-        kubectl apply -f services-deployment-v2.yaml
+        kubectl apply -f deployment.yaml
         kubectl get services -o wide
