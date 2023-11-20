@@ -22,9 +22,6 @@ jobs:
       with:
         credentials_json: ${{ secrets.GKE_CREDENTIAL }}
 
-    - name: Set up gloud CLI
-      uses: google-github-actions/setup-gcloud@v1
-
     - name: Get credentials
       uses: google-github-actions/get-gke-credentials@v1
       with:
