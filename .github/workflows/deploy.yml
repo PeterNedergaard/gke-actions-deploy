@@ -14,22 +14,27 @@ jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy to GKE
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    # Setup gcloud CLI
-    - uses: google-github-actions/setup-gcloud@v1
+      
+    - name: Auth
+      uses: google-github-actions/auth@v1
       with:
-        version: '>= 363.0.0'
-    # Configure Docker to use the gcloud command-line tool as a credential
-    - run: |-
-        gcloud --quiet auth configure-docker
+        credentials_json: ${{ secrets.GKE_CREDENTIAL }}
+
+    # Set up gcloud CLI
+    - name: Setup gloud CLI
+      uses: google-github-actions/setup-gcloud@v1
+
     # Get the GKE credentials so we can deploy to the cluster
-    - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+    - name: Get credentials
+      uses: google-github-actions/get-gke-credentials@v1
       with:
         cluster_name: ${{ env.GKE_CLUSTER }}
         location: ${{ env.GKE_ZONE }}
-        credentials: ${{ secrets.GKE_CREDENTIAL }}
+
     # Deploy to the GKE cluster
     - name: Deploy
       run: |-
