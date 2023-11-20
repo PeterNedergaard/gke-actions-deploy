@@ -20,6 +20,9 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           cluster: ${{ secrets.GKE_CLUSTER_NAME }}
           region: ${{ secrets.GKE_CLUSTER_REGION }}
+      
+      - name: Authenticate with gcloud
+        run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
 
       - name: Configure kubectl
         run: gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --region ${{ secrets.GKE_CLUSTER_REGION }}
